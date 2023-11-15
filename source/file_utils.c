@@ -124,8 +124,9 @@ FileHandle *createFile(Disk *disk, const char *path, ModeType mode)
 {
 
     FCB *fcb;
-
-    char *filename = getFilename(path);
+    char *filename; 
+    
+    filename = getFilename(path);
 
     if ((fcb = searchFile(disk, path)))
         return createFileHandle(fcb, mode);
@@ -177,6 +178,18 @@ int eraseFile(Disk *disk, const char *path)
     return 1;
 }
 
+FileHandle *f_open(Disk *disk, const char *path, ModeType mode)
+{
+    FCB *fcb;
+
+    char *filename = getFilename(path);
+
+    if ((fcb = searchFile(disk, path)))
+        return createFileHandle(fcb, mode);
+    perror("File not found");
+    return 0;
+}
+
 int f_close(FileHandle *fileHandle)
 {
     free(fileHandle);
@@ -185,7 +198,6 @@ int f_close(FileHandle *fileHandle)
 
 int f_write(Disk *disk, FileHandle *f, char *buffer, int size)
 {
-
     assert(disk);
     assert(f);
     assert(buffer);
@@ -239,7 +251,7 @@ int f_read(Disk *disk, FileHandle *f, char *buffer, int size)
     assert(f->permission == R || f->permission == RW);
 
     int i = -1;
-    int bytesRead;
+    int bytesRead = 0;
     int bytesLeft;
     int bytesToRead;
 

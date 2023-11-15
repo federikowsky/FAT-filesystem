@@ -64,7 +64,8 @@ void testDir(Disk *disk)
 
 void testFile(Disk *disk)
 {
-	FileHandle *file = createFile(disk, "ROOT/test2/test.txt", RW);
+	FileHandle *file = f_open(disk, "ROOT/test2/test.txt", RW);
+	file = createFile(disk, "ROOT/test2/test.txt", RW);
 	listDir(disk, disk->root);
 	eraseFile(disk, "ROOT/test2/test.txt");
 	f_close(file);
@@ -100,6 +101,11 @@ void testFile(Disk *disk)
 int main()
 {
     Disk *disk = FS_init();
+	if(!disk)
+	{
+		perror("init failed");
+		return -1;
+	}
 
 	char *block = getBlock(disk);
 	block = getBlock(disk);
